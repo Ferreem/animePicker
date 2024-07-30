@@ -1,36 +1,49 @@
 import { useEffect, useState } from "react";
 import AnimeFetcher from "../components/AnimeFetcher";
 import Footer from "../components/Footer";
+import Heart from "../styles/images/heart.png";
+import Cross from "../styles/images/cross.png";
+import AppButton from "../components/AppButton";
+import Gear from "../styles/images/gear.png"
 
 export default function App() {
   const animeList = AnimeFetcher();
   const [currentAnime, setCurrentAnime] = useState(null);
+  const [generatedNumbers, setGeneratedNumbers] = useState([]);
 
   useEffect(() => {
-    if (animeList.length > 0) {
+    if (animeList.length > 0 && !currentAnime) {
       setCurrentAnime(animeList[0]);
+      setGeneratedNumbers([0]);
     }
-  }, [animeList]);
+  }, [animeList, currentAnime]);
+
+  const nextAnime = () => {
+    if (generatedNumbers.length === animeList.length) {
+      // All anime have been shown, reset the generated numbers
+      setGeneratedNumbers([]);
+    }
+
+    let nextIndex;
+    do {
+      nextIndex = Math.floor(Math.random() * animeList.length);
+    } while (generatedNumbers.includes(nextIndex));
+
+    setGeneratedNumbers(prevNumbers => [...prevNumbers, nextIndex]);
+    setCurrentAnime(animeList[nextIndex]);
+  };
 
   if (!currentAnime) {
     return <div>Loading...</div>;
   }
 
-  const nextAnime = () => {
-    const currentIndex = animeList.findIndex(
-      (anime) => anime.id === currentAnime.id
-    );
-    const nextIndex = (currentIndex + 1) % animeList.length;
-    setCurrentAnime(animeList[nextIndex]);
-  };
-
   return (
     <div className="h-screen w-screen flex items-center justify-center box-border">
       <div className="window w-1/4 h-5/6 border-2 border-cyan-900 rounded-xl flex flex-col items-center">
-        <div className="screen w-full h-full border-2 border-cyan-900 rounded-xl  relative overflow-hidden flex flex-col items-center ">
+        <div className="screen w-full h-full border-2 border-cyan-900 rounded-xl relative overflow-hidden flex flex-col items-center">
           <div className="w-4/5 h-2/4 rounded-xl mt-8">
             {currentAnime.videoUrl ? (
-              <iframe
+              <iframe className="rounded-xl"
                 width="100%"
                 height="100%"
                 src={`${currentAnime.videoUrl.replace(
@@ -53,40 +66,30 @@ export default function App() {
               zIndex: -1,
             }}
           ></div>
-          <div className="z-10 p-2 left-1 text-xl flex-col absolute bottom-44">
+          <div className="z-10 p-2 left-3 text-xl flex-col absolute bottom-44">
             <p className="text-white text-3xl">{currentAnime.title}</p>
-            <div className="rating ">rating: {currentAnime.score}</div>
-            <div className="popularity">
-              popularity: {currentAnime.popularity}
-            </div>
+            <div className="rating">rating: {currentAnime.score}</div>
+            <div className="popularity">popularity: {currentAnime.popularity}</div>
             <div className="ranked">ranked: {currentAnime.rank}</div>
           </div>
-          <div className="h-1/6 absolute bottom-1 w-full flex justify-center">
-            {" "}
-            <button
+          <div className="absolute bottom-12 w-full flex justify-center">
+          <AppButton
+              icon={Heart}
               onClick={nextAnime}
-              className="mt-4 px-4 py-2 h-2/4 m-4 w-2/6 bg-cyan-900 text-white rounded"
-            >like
-              </button>
-            <button
+            />
+            <AppButton
+              icon={Cross}
               onClick={nextAnime}
-              className="mt-4 px-4 py-2 h-2/4 m-4 w-2/6 bg-cyan-900 text-white rounded"
-              >
-              noLike
-            </button>
-            <button
+            />
+            <AppButton
+              icon={Gear}
               onClick={nextAnime}
-              className="mt-4 px-4 py-2 h-2/4 m-4 w-2/6 bg-cyan-900 text-white rounded"
-              >
-              settings
-            </button>
+            />
           </div>
           <div className="absolute bottom-0">
-          <Footer synopsis={currentAnime.synopsis}>synopsis</Footer>
+            <Footer synopsis={currentAnime.synopsis} />
           </div>
         </div>
-
-        <div></div>
       </div>
     </div>
   );
