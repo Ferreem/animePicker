@@ -12,7 +12,12 @@ const fetchTopAnime = async (limit = 25) => {
       id: anime.mal_id,
       title: anime.title,
       imageUrl: anime.images.jpg.image_url,
-      videoUrl: anime.trailer?.url, // Use videoUrl to be consistent
+      videoUrl: anime.trailer?.url,
+      synopsis: anime.synopsis,
+      score: anime.score,
+      rank: anime.rank,
+      popularity: anime.popularity
+
     }));
   } catch (error) {
     console.error('Error fetching data:', error);
