@@ -15,7 +15,7 @@ export default function DragCloseDrawerExample  ( {synopsis , children }) {
         onClick={() => setOpen(true)}
         className="rounded bg-slate-500 px-4 py-2 text-white transition-colors hover:bg-slate-600"
       >
-        Synopsis
+        About
       </button>
 
       <DragCloseDrawer open={open} setOpen={setOpen}>
