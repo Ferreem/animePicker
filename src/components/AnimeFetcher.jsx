@@ -20,7 +20,8 @@ const fetchTopAnime = async (limit = 10) => {
       rank: anime.rank,
       popularity: anime.popularity,
       link: anime.url,
-      genres: anime.genres
+      genres: anime.genres,
+      themes: anime.themes,
     }));
   } catch (error) {
     console.error('Error fetching data:', error);
