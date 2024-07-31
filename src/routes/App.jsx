@@ -6,6 +6,7 @@ import Cross from "../styles/images/cross.png";
 import AppButton from "../components/AppButton";
 import Gear from "../styles/images/gear.png"
 import Settings from "../components/Settings";
+import Result from "../components/Result";
 
 export default function App() {
   const animeList = AnimeFetcher();
@@ -13,6 +14,7 @@ export default function App() {
   const [generatedNumbers, setGeneratedNumbers] = useState([]);
   const [savedAnimeArray, setSavedAnimeArray] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     if (animeList.length > 0 && !currentAnime) {
@@ -23,8 +25,8 @@ export default function App() {
 
   const nextAnime = () => {
     if (generatedNumbers.length === animeList.length) {
-      // All anime have been shown, reset the generated numbers
-      setGeneratedNumbers([]);
+      setShowResult(true);
+      return;
     }
     let nextIndex;
     do {
@@ -48,12 +50,19 @@ export default function App() {
     <div className="h-screen w-screen flex items-center justify-center box-border">
       <div className="window w-1/4 h-5/6 border-2 border-cyan-900 rounded-xl flex flex-col items-center">
         <div className="screen w-full h-full border-2 border-cyan-900 rounded-xl relative overflow-hidden flex flex-col items-center">
-          {showSettings ? (
-            <Settings
+        {showSettings ? (
+          <Settings
             showSettings={showSettings}
             setShowSettings={setShowSettings}
-            />
-          ) : (
+          />
+        ) : showResult ? (
+          <Result
+            showResult={showResult}
+            setShowResult={setShowResult}
+            savedAnimeArray={savedAnimeArray}
+            setSavedAnimeArray={setSavedAnimeArray}
+          />
+        ) : (
             <>
               <div className="w-4/5 h-2/4 rounded-xl mt-8">
                 {currentAnime.videoUrl ? (
