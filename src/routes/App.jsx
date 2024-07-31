@@ -9,12 +9,14 @@ import Settings from "../components/Settings";
 import Result from "../components/Result";
 
 export default function App() {
-  const animeList = AnimeFetcher();
   const [currentAnime, setCurrentAnime] = useState(null);
   const [generatedNumbers, setGeneratedNumbers] = useState([]);
   const [savedAnimeArray, setSavedAnimeArray] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  /*const [animeCount, setAnimeCount] = useState(0);
+  const [filterTop, setFilterTop] = useState(300);*/
+  const animeList = AnimeFetcher(/*animeCount, filterTop*/);
 
   useEffect(() => {
     if (animeList.length > 0 && !currentAnime) {
@@ -90,13 +92,21 @@ export default function App() {
                   zIndex: -1,
                 }}
               ></div>
-              <div className="z-10 p-2 left-3 text-xl flex-col absolute bottom-44">
-                <p className="text-white text-3xl">{currentAnime.title}</p>
-                <div className="rating">rating: {currentAnime.score}</div>
-                <div className="popularity">popularity: {currentAnime.popularity}</div>
-                <div className="ranked">ranked: {currentAnime.rank}</div>
+              <div className="z-10 p-2 left-3 text-xl flex-col absolute bottom-44 ">
+                <div className="flex-wrap">
+                  <p className="text-3xl font-bold flex-wrap">{currentAnime.title}</p>
+                </div>
+                <ul className="genres flex">
+            {currentAnime.genres.map((genre, index) => (
+              <li className=" mr-2 text-xs rounded-full p-1 bg-slate-900" key={index}>{genre.name}</li>
+            ))}
+          </ul>
+
+                <div className="rating font-semibold">Rating: {currentAnime.score}</div>
+                <div className="popularity font-semibold">Popularity: {currentAnime.popularity}</div>
+                <div className="ranked font-semibold">Ranked: {currentAnime.rank}</div>
               </div>
-              <div className="absolute bottom-12 w-full flex justify-center">
+              <div className="absolute bottom-8 w-full flex justify-center">
                 <AppButton
                   icon={Heart}
                   onClick={() => {

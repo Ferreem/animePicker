@@ -19,7 +19,8 @@ const fetchTopAnime = async (limit = 10) => {
       score: anime.score,
       rank: anime.rank,
       popularity: anime.popularity,
-      link: anime.url
+      link: anime.url,
+      genres: anime.genres
     }));
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -36,18 +37,18 @@ const AnimeFetcher = () => {
       // Check if data exists in localStorage
       const storedData = localStorage.getItem(STORAGE_KEY);
       
-      if (storedData) {
+     /* if (storedData) {
         // If data exists, use it
         setAnimeList(JSON.parse(storedData));
         setIsDataFetched(true);
-      } else {
+      } else {*/
         // If no data in localStorage, fetch it
         const formattedAnimeList = await fetchTopAnime();
         setAnimeList(formattedAnimeList);
         setIsDataFetched(true);
         // Store the fetched data in localStorage
         localStorage.setItem(STORAGE_KEY, JSON.stringify(formattedAnimeList));
-      }
+     // }
     };
 
     if (!isDataFetched) {

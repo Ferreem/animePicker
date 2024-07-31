@@ -27,16 +27,21 @@ export default function Result({ showResult, setShowResult, savedAnimeArray, set
 
   return (
     <div className="h-full w-full bg-slate-900 z-50 inset-0 flex flex-col text-white">
-      <h1 className="flex justify-center text-2xl my-4">Anime you picked</h1>
+      <h1 className="flex justify-center text-2xl my-4 font-bold">Anime you picked!</h1>
       <div className="flex-grow overflow-y-auto px-1"
         style={scrollbarStyle}>
         <ul>
           {savedAnimeArray.map((anime, index) => (
-            <li key={index} className="mb-2 flex flex-col border-b-2 pb-2">
+            <li key={index} className="mb-2 flex flex-col border-b-2 pb-2 ml-2">
             <div className="flex justify-between">
                 <div className="flex flex-col">
-                <span className="font-bold">{anime.title}</span>
-                <span >{anime.score}</span>
+                <span className="font-bold text-2xl backdrop:">{anime.title}</span>
+                <span className="mt-1">{anime.score}</span>
+                <ul className="genres flex mt-3">
+            {anime.genres.map((genre, index) => (
+              <li className=" mr-2 text-xs rounded-full p-1 bg-white text-slate-900" key={index}>{genre.name}</li>
+            ))}
+          </ul>
                 </div>
                 <img src={anime.imageUrl} alt="" className="h-28" />
             </div>
