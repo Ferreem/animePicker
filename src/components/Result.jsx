@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Result({ showResult, setShowResult, savedAnimeArray, setSavedAnimeArray }) {
+export default function Result({ showResult, setShowResult, savedAnimeArray, setSavedAnimeArray, setAnimeList, setGeneratedNumbers, setCurrentAnime }) {
   
     const scrollbarStyle = {
         scrollbarWidth: 'thin',
@@ -19,15 +19,17 @@ export default function Result({ showResult, setShowResult, savedAnimeArray, set
     };
 
     const handleClick = () => {
-    setSavedAnimeArray([]);
-    setShowResult(false);
+      setAnimeList(savedAnimeArray);
+      setSavedAnimeArray([]);
+      setGeneratedNumbers([]);
+      setShowResult(false);
+      setCurrentAnime(savedAnimeArray[0]);
     }
 
     return (
       <div className="h-full w-full bg-slate-900 z-50 inset-0 flex flex-col text-white">
         <h1 className="flex justify-center text-2xl my-4 font-bold">Anime you picked!</h1>
         <div className="flex-grow overflow-y-auto px-1" style={scrollbarStyle}>
-          {savedAnimeArray && savedAnimeArray.length > 0 ? (
             <ul>
               {savedAnimeArray.map((anime, index) => (
                 <li key={index} className="mb-2 flex flex-col border-b-2 pb-2 ml-2">
@@ -61,9 +63,6 @@ export default function Result({ showResult, setShowResult, savedAnimeArray, set
                 </li>
               ))}
             </ul>
-          ) : (
-            <p>No anime selected yet.</p>
-          )}
         </div>
         <button
           onClick={handleClick}

@@ -14,17 +14,45 @@ export default function App() {
   const [savedAnimeArray, setSavedAnimeArray] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const animeList = AnimeFetcher();
+  const [animeList, setAnimeList] = useState([]);
 
   useEffect(() => {
-    if (animeList.length > 0 && !currentAnime) {
+    const fetchAnime = async () => {
+      try {
+        const fetcher = AnimeFetcher(25);
+        const fetchedAnimeList = await fetcher.fetch();
+        if (fetchedAnimeList.length === 0) {
+          console.error('No anime data fetched');
+        } else {
+          setAnimeList(fetchedAnimeList);
+        }
+      } catch (error) {
+        console.error('Error in fetchAnime:', error);
+      }
+    };
+  
+    fetchAnime();
+  }, []);
+
+  useEffect(() => {
+    if (animeList.length > 0 && generatedNumbers.length === 0) {
       setCurrentAnime(animeList[0]);
       setGeneratedNumbers([0]);
     }
-  }, [animeList, currentAnime]);
+  }, [animeList, generatedNumbers]);
+
+  useEffect(() => {
+    setGeneratedNumbers([]);
+  }, [animeList]);
 
   const nextAnime = () => {
-    if (generatedNumbers.length === animeList.length) {
+    if (generatedNumbers.length >= animeList.length) {
+      
+      if(animeList.length == 1){
+        console.log("YOU DID IT")
+        return;
+      }
+      setGeneratedNumbers([]);
       setShowResult(true);
       return;
     }
@@ -33,13 +61,15 @@ export default function App() {
       nextIndex = Math.floor(Math.random() * animeList.length);
     } while (generatedNumbers.includes(nextIndex));
 
-    setGeneratedNumbers((prevNumbers) => [...prevNumbers, nextIndex]);
+    setGeneratedNumbers(prevNumbers => [...prevNumbers, nextIndex]);
     setCurrentAnime(animeList[nextIndex]);
   };
 
   const savedAnime = () => {
-    setSavedAnimeArray((prevNumbers) => [...prevNumbers, currentAnime]);
-    console.log(savedAnimeArray);
+    if (!savedAnimeArray.some(anime => anime.id === currentAnime.id)) {
+      setSavedAnimeArray(prevArray => [...prevArray, currentAnime]);
+    }
+    nextAnime();
   };
 
   if (!currentAnime) {
@@ -61,26 +91,15 @@ export default function App() {
               setShowResult={setShowResult}
               savedAnimeArray={savedAnimeArray}
               setSavedAnimeArray={setSavedAnimeArray}
+              setAnimeList={setAnimeList}
+              setGeneratedNumbers={setGeneratedNumbers}
+              nextAnime={nextAnime}
+              setCurrentAnime={setCurrentAnime}
             />
           ) : (
             <>
               <div className="w-4/5 h-2/4 rounded-xl mt-8 flex-shrink-0">
-                {currentAnime.videoUrl ? (
-                  <iframe
-                    className="rounded-xl"
-                    width="100%"
-                    height="100%"
-                    src={`${currentAnime.videoUrl.replace(
-                      "watch?v=",
-                      "embed/"
-                    )}?autoplay=1`}
-                    title={currentAnime.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                ) : (
-                  <p>No video available</p>
-                )}
+                {/* Video content here */}
               </div>
               <div
                 className="absolute inset-0 bg-cover bg-center"
@@ -126,13 +145,11 @@ export default function App() {
               <div className="absolute bottom-8 w-full flex justify-center z-20">
                 <AppButton
                   icon={Heart}
-                  onClick={() => {
-                    nextAnime();
-                    savedAnime();
-                  }}
+                  onClick={savedAnime}
                 />
                 <AppButton icon={Cross} onClick={nextAnime} />
                 <AppButton icon={Gear} onClick={() => setShowSettings(true)} />
+                <AppButton icon={Gear} onClick={() => setShowResult(true)} />
               </div>
               <div className="flex justify-center">
                 <div className=" w-full">
