@@ -11,9 +11,10 @@ import Background from "../styles/images/background.jpg"; // Import the backgrou
 
 function getYouTubeEmbedUrl(url) {
   if (!url) return null;
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const regExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
   const match = url.match(regExp);
-  return (match && match[2].length === 11)
+  return match && match[2].length === 11
     ? `https://www.youtube.com/embed/${match[2]}?autoplay=1&mute=1`
     : null;
 }
@@ -25,26 +26,29 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(true);
   const [showResult, setShowResult] = useState(false);
   const [animeList, setAnimeList] = useState([]);
-  const [animeCount, setAnimeCount] = useState(25); 
+  const [animeCount, setAnimeCount] = useState(25);
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [selectedThemes, setSelectedThemes] = useState([]);
+
 
   useEffect(() => {
     const fetchAnime = async () => {
       try {
-        const fetcher = AnimeFetcher(animeCount); // Use animeCount instead of hardcoded value
+        const fetcher = AnimeFetcher(animeCount, selectedGenres, selectedThemes);
         const fetchedAnimeList = await fetcher.fetch();
-        console.log('Fetched anime list:', fetchedAnimeList);
+        console.log("Fetched anime list:", fetchedAnimeList);
         if (fetchedAnimeList.length === 0) {
-          console.error('No anime data fetched');
+          console.error("No anime data fetched");
         } else {
           setAnimeList(fetchedAnimeList);
         }
       } catch (error) {
-        console.error('Error in fetchAnime:', error);
+        console.error("Error in fetchAnime:", error);
       }
     };
   
     fetchAnime();
-  }, [animeCount]); // Add animeCount as a dependency
+  }, [animeCount, selectedGenres, selectedThemes]);
 
   useEffect(() => {
     if (animeList.length > 0 && generatedNumbers.length === 0) {
@@ -99,18 +103,21 @@ export default function App() {
       style={{
         backgroundImage: `url(${Background})`,
         zIndex: -2,
+        
       }}
     >
-      <div className="window w-1/4 min-w-[370px] h-5/6 border-2 border-cyan-900 rounded-xl flex flex-col items-center flex-shrink-0">
+      <div className="window w-1/4 min-w-[390px] h-5/6 border-2 border-cyan-900 rounded-xl flex flex-col items-center flex-shrink-0">
         <div className="screen w-full h-full border-2 border-cyan-900 rounded-xl relative overflow-hidden flex flex-col items-center flex-shrink-0">
           {showSettings ? (
-            <Settings showSettings={showSettings} 
-             setShowSettings={setShowSettings}
-             animeCount={animeCount}
-             setAnimeCount={setAnimeCount}
-             triggerNewFetch={triggerNewFetch}
-             />
-             
+            <Settings
+              showSettings={showSettings}
+              setShowSettings={setShowSettings}
+              animeCount={animeCount}
+              setAnimeCount={setAnimeCount}
+              triggerNewFetch={triggerNewFetch}
+              setSelectedGenres={setSelectedGenres}
+              setSelectedThemes={setSelectedThemes}
+            />
           ) : showResult ? (
             <Result
               showResult={showResult}
@@ -125,29 +132,30 @@ export default function App() {
           ) : (
             <>
               <div className="w-4/5 h-2/4 rounded-xl mt-8 flex-shrink-0 z-50">
-              {currentAnime.videoUrl && getYouTubeEmbedUrl(currentAnime.videoUrl) ? (
-    <iframe
-      className="rounded-xl w-full h-full z-50"
-      src={getYouTubeEmbedUrl(currentAnime.videoUrl)}
-      title={currentAnime.title}
-      frameBorder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-      onError={(e) => console.error("iframe error:", e)}
-    >
-      <p>Your browser does not support iframes.</p>
-    </iframe>
-  ) : (
-    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-      <p>No video available or failed to load</p>
-    </div>
-  )}      </div>
+              {/*  {currentAnime.videoUrl &&
+                getYouTubeEmbedUrl(currentAnime.videoUrl) ? (
+                  <iframe
+                    className="rounded-xl w-full h-full z-50"
+                    src={getYouTubeEmbedUrl(currentAnime.videoUrl)}
+                    title={currentAnime.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    onError={(e) => console.error("iframe error:", e)}
+                  >
+                    <p>Your browser does not support iframes.</p>
+                  </iframe>
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <p>No video available or failed to load</p>
+                  </div>
+                )}{" "}*/}
+              </div>
               <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
                   backgroundImage: `url(${currentAnime.imageUrl})`,
-                  filter: "brightness(80%) blur(5px)",
-                  
+                  filter: "brightness(50%) blur(5px)",
                 }}
               ></div>
 
@@ -159,12 +167,20 @@ export default function App() {
                 </div>
                 <ul className="genres flex mt-3 flex-wrap w-full">
                   {[
-                    ...(currentAnime.genres?.map((g) => ({ ...g, type: "genre" })) || []),
-                    ...(currentAnime.themes?.map((t) => ({ ...t, type: "theme" })) || []),
+                    ...(currentAnime.genres?.map((g) => ({
+                      ...g,
+                      type: "genre",
+                    })) || []),
+                    ...(currentAnime.themes?.map((t) => ({
+                      ...t,
+                      type: "theme",
+                    })) || []),
                   ].map((item, index) => (
                     <li
                       className={`mr-2 mb-1 mt-2 text-xs rounded-full p-1 ${
-                        item.type === "genre" ? "bg-white text-slate-900" : "bg-slate-700 text-white"
+                        item.type === "genre"
+                          ? "bg-white text-slate-900"
+                          : "bg-slate-700 text-white"
                       }`}
                       key={index}
                     >
@@ -183,12 +199,12 @@ export default function App() {
                   Ranked: {currentAnime.rank}
                 </div>
               </div>
-              <div className="absolute bottom-8 w-full flex justify-center z-20">
+              <div className="absolute bottom-6 w-full flex justify-center z-20">
                 <AppButton icon={Heart} onClick={savedAnime} />
                 <AppButton icon={Cross} onClick={nextAnime} />
                 <AppButton icon={Stop} onClick={() => setShowResult(true)} />
               </div>
-              <div className="flex justify-center">
+              <div className="flex justify-center z-50">
                 <div className=" w-full">
                   <Footer synopsis={currentAnime.synopsis} />
                 </div>
