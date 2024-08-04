@@ -9,6 +9,7 @@ import Result from "../components/Result";
 import Stop from "../styles/images/stop.png";
 import Background from "../styles/images/background.jpg"; // Import the background image
 import Loading from "../components/Loading";
+import EmptyResult from "../components/EmptyResult";
 
 function getYouTubeEmbedUrl(url) {
   if (!url) return null;
@@ -51,7 +52,8 @@ export default function App() {
         }
       } catch (error) {
         console.error("Error in fetchAnime:", error);
-        setShowLoading(false);  // Add this line
+        setShowLoading(false);  
+        setShowEmpty(true);
       }
     };
   
@@ -140,6 +142,8 @@ export default function App() {
             />
           ) : showLoading ? (
             <Loading/>
+          ) : showEmpty ? (
+            <EmptyResult/>
           ) : (
             <>
               <div className="w-4/5 h-2/4 rounded-xl mt-8 flex-shrink-0 z-50">
