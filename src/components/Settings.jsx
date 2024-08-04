@@ -123,7 +123,8 @@ export default function Settings({ showSettings, setShowSettings, animeCount, se
     setShowSettings(false);
     setSelectedGenres(localGenres);
     setSelectedThemes(localThemes);
-    triggerNewFetch();
+    setShowLoading(true);
+
   };
 
   const handleInputChange = (e) => {

@@ -8,6 +8,7 @@ import Settings from "../components/Settings";
 import Result from "../components/Result";
 import Stop from "../styles/images/stop.png";
 import Background from "../styles/images/background.jpg"; // Import the background image
+import Loading from "../components/Loading";
 
 function getYouTubeEmbedUrl(url) {
   if (!url) return null;
@@ -29,21 +30,26 @@ export default function App() {
   const [animeCount, setAnimeCount] = useState(25);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedThemes, setSelectedThemes] = useState([]);
+  const [showLoading, setShowLoading] = useState(false);
 
 
   useEffect(() => {
     const fetchAnime = async () => {
       try {
+        setShowLoading(true);  // Add this line
         const fetcher = AnimeFetcher(animeCount, selectedGenres, selectedThemes);
         const fetchedAnimeList = await fetcher.fetch();
         console.log("Fetched anime list:", fetchedAnimeList);
         if (fetchedAnimeList.length === 0) {
           console.error("No anime data fetched");
+          setShowLoading(false);
         } else {
           setAnimeList(fetchedAnimeList);
+          setShowLoading(false);
         }
       } catch (error) {
         console.error("Error in fetchAnime:", error);
+        setShowLoading(false);  // Add this line
       }
     };
   
@@ -90,7 +96,6 @@ export default function App() {
   const triggerNewFetch = () => {
     setGeneratedNumbers([]);
     setCurrentAnime(null);
-    // The useEffect will handle the actual fetching
   };
 
   if (!currentAnime) {
@@ -118,6 +123,8 @@ export default function App() {
               setSelectedGenres={setSelectedGenres}
               setSelectedThemes={setSelectedThemes}
             />
+
+          
           ) : showResult ? (
             <Result
               showResult={showResult}
@@ -129,6 +136,8 @@ export default function App() {
               nextAnime={nextAnime}
               setCurrentAnime={setCurrentAnime}
             />
+          ) : showLoading ? (
+            <Loading/>
           ) : (
             <>
               <div className="w-4/5 h-2/4 rounded-xl mt-8 flex-shrink-0 z-50">
