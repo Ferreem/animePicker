@@ -36,6 +36,7 @@ export default function App() {
 
 
   useEffect(() => {
+    console.log("App - Fetching anime. Count:", animeCount, "Genres:", selectedGenres, "Themes:", selectedThemes);
     const fetchAnime = async () => {
       try {
         setShowLoading(true);  // Add this line
@@ -49,6 +50,7 @@ export default function App() {
         } else {
           setAnimeList(fetchedAnimeList);
           setShowLoading(false);
+
         }
       } catch (error) {
         console.error("Error in fetchAnime:", error);
@@ -105,6 +107,24 @@ export default function App() {
   if (!currentAnime) {
     return <div>Loading...</div>;
   }
+  const fetchGenresAndThemes = async () => {
+    try {
+      const genreResponse = await fetch("https://api.jikan.moe/v4/genres/anime");
+      const genreData = await genreResponse.json();
+      const genres = genreData.data;
+  
+      const themeResponse = await fetch("https://api.jikan.moe/v4/genres/anime?type=themes");
+      const themeData = await themeResponse.json();
+      const themes = themeData.data;
+  
+      console.log("Genres:", genres);
+      console.log("Themes:", themes);
+    } catch (error) {
+      console.error("Error fetching genres and themes:", error);
+    }
+  };
+  
+  
 
   return (
     <div
