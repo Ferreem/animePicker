@@ -99,6 +99,7 @@ const themes = [
 export default function Settings({ showSettings, setShowSettings, animeCount, setAnimeCount, triggerNewFetch, setSelectedGenres, setSelectedThemes }) {
   const [localGenres, setLocalGenres] = useState([]);
   const [localThemes, setLocalThemes] = useState([]);
+  const [localAnimeCount, setLocalAnimeCount] = useState(animeCount);
 
 
   const scrollbarStyle = {
@@ -119,21 +120,21 @@ export default function Settings({ showSettings, setShowSettings, animeCount, se
 
 
 
-  const back = () => {
-    setShowSettings(false);
-    setSelectedGenres(localGenres);
-    setSelectedThemes(localThemes);
-    setShowLoading(true);
-
-  };
+const back = () => {
+  setShowSettings(false);
+  setSelectedGenres(localGenres);
+  setSelectedThemes(localThemes);
+  setAnimeCount(localAnimeCount);
+  triggerNewFetch();
+};
 
   const handleInputChange = (e) => {
     const value = e.target.value;
     if (value === '') {
-      setAnimeCount('');
+      setLocalAnimeCount('');
     } else {
       const numValue = Number(value);
-      setAnimeCount(isNaN(numValue) ? '' : numValue);
+      setLocalAnimeCount(isNaN(numValue) ? '' : numValue);
     }
   };
 
@@ -164,7 +165,7 @@ export default function Settings({ showSettings, setShowSettings, animeCount, se
             <input 
               type="number" 
               className="mt-2 p-1 text-slate-900 w-full" 
-              value={animeCount} 
+              value={localAnimeCount} 
               onChange={handleInputChange}
             />
           </label>

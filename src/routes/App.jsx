@@ -31,6 +31,7 @@ export default function App() {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedThemes, setSelectedThemes] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
+  const [showEmpty ,setShowEmpty] = useState(false);
 
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function App() {
         if (fetchedAnimeList.length === 0) {
           console.error("No anime data fetched");
           setShowLoading(false);
+          setShowEmpty(true);
         } else {
           setAnimeList(fetchedAnimeList);
           setShowLoading(false);
