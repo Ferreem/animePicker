@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Result({ showResult, setShowResult, savedAnimeArray, setSavedAnimeArray, setAnimeList, setGeneratedNumbers, setCurrentAnime }) {
+export default function Result({setShowResult, savedAnimeArray, setSavedAnimeArray, setAnimeList, setGeneratedNumbers, setCurrentAnime }) {
   
     const scrollbarStyle = {
         scrollbarWidth: 'thin',

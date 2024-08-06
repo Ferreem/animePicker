@@ -36,10 +36,9 @@ export default function App() {
 
 
   useEffect(() => {
-    console.log("App - Fetching anime. Count:", animeCount, "Genres:", selectedGenres, "Themes:", selectedThemes);
     const fetchAnime = async () => {
       try {
-        setShowLoading(true);  // Add this line
+        setShowLoading(true); 
         const fetcher = AnimeFetcher(animeCount, selectedGenres, selectedThemes);
         const fetchedAnimeList = await fetcher.fetch();
         console.log("Fetched anime list:", fetchedAnimeList);
@@ -107,24 +106,7 @@ export default function App() {
   if (!currentAnime) {
     return <div>Loading...</div>;
   }
-  const fetchGenresAndThemes = async () => {
-    try {
-      const genreResponse = await fetch("https://api.jikan.moe/v4/genres/anime");
-      const genreData = await genreResponse.json();
-      const genres = genreData.data;
-  
-      const themeResponse = await fetch("https://api.jikan.moe/v4/genres/anime?type=themes");
-      const themeData = await themeResponse.json();
-      const themes = themeData.data;
-  
-      console.log("Genres:", genres);
-      console.log("Themes:", themes);
-    } catch (error) {
-      console.error("Error fetching genres and themes:", error);
-    }
-  };
-  
-  
+
 
   return (
     <div
@@ -167,13 +149,13 @@ export default function App() {
           ) : (
             <>
               <div className="w-4/5 h-2/4 rounded-xl mt-8 flex-shrink-0 z-50">
-              {/*  {currentAnime.videoUrl &&
+                {currentAnime.videoUrl &&
                 getYouTubeEmbedUrl(currentAnime.videoUrl) ? (
                   <iframe
                     className="rounded-xl w-full h-full z-50"
                     src={getYouTubeEmbedUrl(currentAnime.videoUrl)}
                     title={currentAnime.title}
-                    frameBorder="0"
+                    
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     onError={(e) => console.error("iframe error:", e)}
@@ -184,7 +166,7 @@ export default function App() {
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                     <p>No video available or failed to load</p>
                   </div>
-                )}{" "}*/}
+                )}{" "}
               </div>
               <div
                 className="absolute inset-0 bg-cover bg-center"
@@ -234,7 +216,7 @@ export default function App() {
                   Ranked: {currentAnime.rank}
                 </div>
               </div>
-              <div className="absolute bottom-6 w-full flex justify-center z-20">
+              <div className="absolute bottom-7 w-full flex justify-center z-20">
                 <AppButton icon={Heart} onClick={savedAnime} />
                 <AppButton icon={Cross} onClick={nextAnime} />
                 <AppButton icon={Stop} onClick={() => setShowResult(true)} />

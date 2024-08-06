@@ -7,8 +7,8 @@ export default function Loading() {
       <div className="h-full w-full bg-slate-900 z-50 inset-0 m flex flex-col items-center justify-center font-bold">
         <motion.div className="mb-12"
       style={{
-        width: '100px',
-        height: '100px',
+        width: '75px',
+        height: '75px',
         border: '2px solid white',
       }}
       animate={{ rotate: 360 }}

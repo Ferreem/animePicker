@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+//DONE
 const genres = [
   { id: 1, name: 'Action' },
   { id: 2, name: 'Adventure' },
@@ -104,7 +105,6 @@ export default function Settings({ showSettings, setShowSettings, animeCount, se
 
 
 const back = () => {
-  console.log("Settings - Submitting. Genres:", localGenres, "Themes:", localThemes);
   setShowSettings(false);
   setSelectedGenres(localGenres);
   setSelectedThemes(localThemes);
@@ -131,19 +131,10 @@ const back = () => {
     );
   };
 
-  const handleThemeChange = (e) => {
-    const themeId = Number(e.target.value);
-    setLocalThemes(prevThemes => 
-      prevThemes.includes(themeId)
-        ? prevThemes.filter(id => id !== themeId)
-        : [...prevThemes, themeId]
-    );
-  };
-
   return (
     <>
       <div className="h-full w-full bg-slate-900 z-50 inset-0 m flex flex-col items-center font-bold">
-        <div className="flex flex-col w-full my-16 max-h-[80vh] overflow-y-auto px-4" style={scrollbarStyle}>
+        <div className="flex flex-col w-full my-8  overflow-y-auto px-4 " style={scrollbarStyle}>
           <label className="mb-4">
             How many animes to find:
             <input 
@@ -170,8 +161,8 @@ const back = () => {
               ))}
             </div>
           </div>
-          <button className="mt-8 p-2 border-2" onClick={back}>Submit</button>
         </div>
+        <button className="mb-6 py-6 px-10 border-2 rounded-md" onClick={back}>Submit</button>
       </div>
     </>
   );

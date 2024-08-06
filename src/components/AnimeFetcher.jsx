@@ -11,8 +11,6 @@ export default function AnimeFetcher(limit = 1000, genres = [], themes = []) {
       url += `&themes=${themes.join(",")}`;
     }
 
-    console.log(`AnimeFetcher - Fetching page ${page}, requesting ${fetchLimit} items...`);
-    console.log(`AnimeFetcher - URL:`, url);
 
     const response = await fetch(url);
     const data = await response.json();
@@ -43,7 +41,6 @@ export default function AnimeFetcher(limit = 1000, genres = [], themes = []) {
 
   return {
     fetch: async () => {
-      console.log("AnimeFetcher - Starting fetch. Limit:", limit, "Genres:", genres, "Themes:", themes);
       try {
         let allAnime = [];
         let page = 1;
@@ -68,7 +65,7 @@ export default function AnimeFetcher(limit = 1000, genres = [], themes = []) {
           }
 
           page++;
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Rate limiting
+          await new Promise((resolve) => setTimeout(resolve, 1000)); 
         }
 
         console.log(`AnimeFetcher - Total anime fetched: ${allAnime.length}`);
